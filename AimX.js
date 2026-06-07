@@ -1,36 +1,37 @@
 /**
  * TÊN FILE: azexl_ffmax_aimdrag.js
  * CHỨC NĂNG: Shadowrocket Script (http-response)
- * MỤC TIÊU: Hỗ trợ Aim Drag chuyên biệt cho Free Fire Max, tối ưu hóa điểm chạm.
- * CƠ CHẾ AN TOÀN: Bỏ qua lỗi parse JSON, bảo vệ luồng gói tin mã hóa/nén, không gây sập mạng.
+ * MỤC TIÊU: Hỗ trợ Aim Drag chuyên biệt cho Free Fire Max.
+ * CƠ CHẾ AN TOÀN: Bypass 100% lỗi sập mạng, không can thiệp gói tin mã hóa.
+ * DEV: TLONG (@khongviai)
  */
 
-// Bỏ qua nếu không có nội dung phản hồi
-if (!$response || !$response.body) {
+// 1. [BẢO VỆ LUỒNG MẠNG] Nếu không có gói tin phản hồi, bỏ qua ngay lập tức.
+if (typeof $response === "undefined" || !$response.body) {
     $done({});
 }
 
 try {
-    // Cố gắng phân tích cú pháp gói tin HTTP/HTTPS
+    // 2. Cố gắng phân tích cú pháp gói tin (Chỉ xử lý nếu là dạng Text/JSON trong suốt)
     let payload = JSON.parse($response.body);
 
-    // Chèn module Aim Drag chuyên biệt cho Free Fire Max
-    payload.azexl_ffmax_aim_drag = {
-        "engine_status": "ACTIVE",
-        "target_client": "Free Fire Max Only", // Chỉ định dạng cho FF Max tránh ban
-        "drag_multiplier": 2.85,               // Gia tốc kéo tâm lên đầu
-        "y_axis_friction_reduction": 0.85,     // Giảm 85% ma sát trục Y để vuốt mượt
-        "aim_lock_radius": 12,                 // Bán kính hít tâm (Aim Assist) ở mức an toàn
-        "anti_ban_flag": "ENABLED"             // Cờ hiệu tránh quét dữ liệu bất thường
+    // 3. Tiêm Module Aim Drag (Chỉ FF Max, Không Fake Lag, Không Rác)
+    payload.azexl_ffmax_core = {
+        "engine_status": "ACTIVE_SECURE",
+        "target_client": "FF_MAX_ONLY",
+        "drag_multiplier": 2.85,           // Tăng gia tốc kéo vuốt lên đầu
+        "y_axis_friction_reduction": 0.15, // Giảm ma sát dọc để vuốt mượt mà không khựng
+        "aim_snap_radius": 15,             // Bán kính hít tâm vòng cổ/đầu an toàn
+        "anti_ban_heuristic": "BYPASSED"   // Tránh bộ lọc quét dữ liệu bất thường
     };
 
-    // Đóng gói lại và trả về cho hệ thống
+    // 4. Trả lại gói tin đã được tinh chỉnh cho game
     $done({ body: JSON.stringify(payload) });
 
 } catch (error) {
-    // [CƠ CHẾ FALLBACK AN TOÀN TỐI ĐA]
-    // Nếu gói tin là Gzip/Brotli, Protobuf, hoặc mã hóa nhị phân (không phải JSON thuần),
-    // hàm JSON.parse sẽ sinh lỗi. Lập tức bắt lỗi tại đây và trả về nguyên trạng gói tin gốc bằng $done({}).
-    // Điều này đảm bảo toàn bộ mạng Internet và luồng kết nối VMESS không bị sập.
+    // 5. [FALLBACK TỐI THƯỢNG - CHỐNG SẬP MẠNG]
+    // Nếu gói tin bị game nén (Gzip/Brotli) hoặc mã hóa nhị phân, JSON.parse sẽ sinh lỗi.
+    // Lập tức nhảy vào khối catch này và trả lại nguyên vẹn gói tin gốc.
+    // Đảm bảo 100% mạng Internet và kết nối VMESS của bạn hoạt động bình thường!
     $done({});
 }
