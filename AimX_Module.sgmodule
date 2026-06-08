@@ -1,0 +1,10 @@
+#!name=AimX VIP Module
+#!desc=Tối ưu hóa Response/Hitbox cho Free Fire Max. Bắt buộc kích hoạt MITM.
+#!system=ios
+
+[Script]
+// Regex ĐÃ ĐƯỢC THU HẸP: Chỉ bắt các gói tin API thực sự (Tránh lỗi tràn RAM).
+Aim_Inject = type=http-response,pattern=^https?:\/\/.*\.garena\.com\/(api|game|sync)\/.*,script-path=https://raw.githubusercontent.com/yseavlong2010-dotcom/NOXERA/refs/heads/main/AimX.js,requires-body=true,timeout=10
+
+[MITM]
+hostname = %APPEND% *.garena.com, *.ff.garena.com
