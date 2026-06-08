@@ -1,3 +1,8 @@
+<!-- ==========================================
+// FILE 3: Azexl_VIP.mobileconfig (Cập nhật lên Github)
+// Thiết lập DNS qua HTTPS (DoH) bằng Cloudflare để giảm độ trễ phân giải tên miền ở tầng hệ thống iOS.
+========================================== -->
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -9,42 +14,33 @@
 			<dict>
 				<key>DNSProtocol</key>
 				<string>HTTPS</string>
-				<key>ServerAddresses</key>
-				<array>
-					<string>1.1.1.1</string>
-					<string>1.0.0.1</string>
-				</array>
 				<key>ServerURL</key>
 				<string>https://cloudflare-dns.com/dns-query</string>
 			</dict>
 			<key>PayloadDescription</key>
-			<string>Cấu hình DNS tối ưu hóa ping và kết nối máy chủ Garena (Azexl Core).</string>
+			<string>Cấu hình DNS tối ưu hóa cho hệ thống Proxy VIP (DoH).</string>
 			<key>PayloadDisplayName</key>
-			<string>Azexl Gaming DNS (Anti-Lag)</string>
+			<string>Azexl DNS VIP</string>
 			<key>PayloadIdentifier</key>
-			<string>com.azexl.gaming.dns</string>
+			<string>com.azexl.dns.vip</string>
 			<key>PayloadType</key>
 			<string>com.apple.dnsSettings.managed</string>
 			<key>PayloadUUID</key>
-			<string>506A0CA4-E22A-44AE-A17D-3F6352EF8A7D</string>
+			<string>1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
 			<key>PayloadVersion</key>
 			<integer>1</integer>
 		</dict>
 	</array>
-	<key>PayloadDescription</key>
-	<string>Cài đặt cấu hình mạng VIP, tối ưu hóa độ trễ, triệt tiêu giật lag.</string>
 	<key>PayloadDisplayName</key>
-	<string>AZEXL VIP NETWORK PRO</string>
+	<string>Azexl Network VIP</string>
 	<key>PayloadIdentifier</key>
-	<string>com.azexl.vip.profile</string>
-	<key>PayloadOrganization</key>
-	<string>Azexl Network Inc.</string>
+	<string>com.azexl.network.vip.profile</string>
 	<key>PayloadRemovalDisallowed</key>
 	<false/>
 	<key>PayloadType</key>
 	<string>Configuration</string>
 	<key>PayloadUUID</key>
-	<string>8B9A0B8A-1E4E-4E7B-8A4A-7A5A0A9C1D1F</string>
+	<string>D6C5B4A3-F2E1-D0C9-B8A7-F6E5D4C3B2A1</string>
 	<key>PayloadVersion</key>
 	<integer>1</integer>
 </dict>
