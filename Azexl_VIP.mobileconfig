@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>PayloadDescription</key>
-	<string>Cài đặt cấu hình mạng VIP, tối ưu hóa độ trễ, triệt tiêu giật lag và cấp quyền Script Injector cho thiết bị của bạn.</string>
+	<string>Cài đặt cấu hình mạng VIP, tối ưu hóa độ trễ, triệt tiêu giật lag.</string>
 	<key>PayloadDisplayName</key>
 	<string>AZEXL VIP NETWORK PRO</string>
 	<key>PayloadIdentifier</key>
