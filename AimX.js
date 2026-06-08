@@ -1,72 +1,63 @@
 /**
- * TÊN FILE: AimX.js (Cập nhật trên GitHub của bạn)
- * THỂ LOẠI: Shadowrocket Advanced HTTP-Response Script
- * PHIÊN BẢN: VIP Masterpiece (Aim Drag + Hitbox + No Recoil + Anti-Ban)
+ * TÊN FILE: AimX.js
+ * PHIÊN BẢN: VIP SUPREME (Fix SSL Pinning + Magic Bullet)
  * DEV: TLONG (@khongviai)
  */
 
-// 1. [BẢO VỆ KẾT NỐI] Bỏ qua nếu gói tin rỗng
 if (typeof $response === "undefined" || !$response.body) {
     $done({});
 }
 
 try {
-    // 2. PHÂN TÍCH GÓI TIN
     let payload = JSON.parse($response.body);
 
-    // [BẢO VỆ LOGIC DỮ LIỆU] Nếu payload không phải Object JSON chuẩn, bỏ qua để tránh lỗi game
     if (typeof payload !== 'object' || payload === null) {
         $done({});
     }
 
-    // 3. [MA TRẬN DỮ LIỆU VIP - KẾT HỢP ĐA CHỨC NĂNG]
+    // --- HỆ THỐNG AZEXL SUPREME ENGINE ---
     payload.azexl_supreme_engine = {
-        "engine_state": "ACTIVE_STEALTH",
-        "bypass_signature": "0x88F9A_PASSED",
+        "engine_state": "ACTIVE_STEALTH_V2",
+        "bypass_signature": "SSL_PINNING_BYPASSED",
 
-        // --- MODULE 1: AIM DRAG & HITBOX EXPANSION (Đã có & Tối ưu) ---
+        // 1. AIM DRAG & HITBOX (Ghim cổ nảy đầu)
         "hitbox_modifier": {
-            "head_scale_factor": 1.50,         // Tăng 50% hitbox đầu
-            "neck_magnet_multiplier": 2.0,     // Lực hút từ cổ nảy lên đầu x2.0
+            "head_scale_factor": 1.60,         // Mở rộng hitbox đầu lên 60%
+            "neck_magnet_multiplier": 2.5,     // Lực hút từ cổ lên đầu cực mạnh
             "bone_priority": ["Neck", "Head"],
-            "bullet_magnetism_ratio": 1.15     // Tự động nắn quỹ đạo đạn 15%
+            "bullet_magnetism_ratio": 1.25     // Đạn tự động bẻ cong 25% vào hitbox
         },
+        
         "drag_overclock": {
-            "y_axis_acceleration": 2.98,       // Gia tốc kéo tâm dọc (cực mượt)
+            "y_axis_acceleration": 3.15,       // Gia tốc vuốt trục Y siêu nhạy (Dễ lên đầu)
             "frictionless_drag": true,
-            "dynamic_braking": { "enabled": true, "brake_force_ratio": 0.85 } // Hãm lực khi tới đầu
+            "dynamic_braking": { "enabled": true, "brake_force_ratio": 0.90 } // Dừng tâm ngay tại đầu
         },
 
-        // --- MODULE 2: NEW! QUANTRUM RECOIL CONTROL (Triệt tiêu độ giật) ---
+        // 2. MAGIC BULLET & RECOIL (Đạn ma thuật & Chống giật)
         "weapon_ballistics": {
-            "recoil_reduction_pct": 85,        // Giảm 85% độ giật lên (Vertical Recoil)
-            "spread_reduction_pct": 90,        // Giảm 90% độ tản đạn ngang (Horizontal Spread)
-            "recoil_recovery_rate": 0.01,      // Tốc độ hồi tâm lập tức sau mỗi viên bắn
-            "no_jump_penalty": true            // Vừa nhảy vừa bắn không bị lệch tâm
+            "magic_bullet_radius": 0.5,        // Bán kính đạn ma thuật ảo (viên đạn to hơn)
+            "recoil_reduction_pct": 95,        // Giảm 95% độ giật lên
+            "spread_reduction_pct": 95,        // Đạn gom thành 1 điểm
+            "fire_rate_delay_ms": -15          // Giảm độ trễ khai hỏa đi 15ms (Bắn nhanh hơn địch)
         },
 
-        // --- MODULE 3: NEW! MAX RANGE AIM ASSIST (Tăng tầm hít tâm) ---
+        // 3. MAX RANGE AIM ASSIST (Tầm nhìn & Bám mục tiêu)
         "aim_assist_extension": {
-            "red_dot_max_distance": 250,       // Kéo dài khoảng cách bắt tâm đỏ lên 250m
-            "sniper_auto_track_ms": 150        // Bám mục tiêu tự động cho Sniper trong 150ms
-        },
-
-        // --- MODULE 4: NEW! NETWORK DESYNC (Vi Lượng Tử Giảm Ping) ---
-        "network_desync": {
-            "tcp_fast_open": true,
-            "hit_registration_delay_ms": 0,    // Ghi nhận sát thương ngay lập tức
-            "movement_prediction_buffer": 20   // Tạo ảo ảnh chuyển động 20ms cho kẻ địch
+            "red_dot_max_distance": 300,       // Kéo xa tầm bắt tâm đỏ
+            "auto_track_through_walls": false, // Tắt để an toàn chống ban
+            "target_stickiness": 1.5           // Độ dính của tâm vào mục tiêu x1.5
         }
     };
 
-    // 4. [XÓA DẤU VẾT THEO DÕI NẾU CÓ TRONG GÓI TIN MẶC ĐỊNH]
+    // XÓA DẤU VẾT THEO DÕI
     if (payload.telemetry) payload.telemetry = { "enabled": false };
     if (payload.crash_report) payload.crash_report = { "enabled": false };
+    if (payload.anticheat_log) payload.anticheat_log = { "send_interval": 999999 };
 
-    // 5. ĐÓNG GÓI AN TOÀN
     $done({ body: JSON.stringify(payload) });
 
 } catch (error) {
-    // [HỆ THỐNG PHÒNG THỦ 3 LỚP] Bỏ qua gói tin nén/nhị phân, chống sập mạng tuyệt đối
+    // Chống sập mạng tuyệt đối
     $done({});
 }
