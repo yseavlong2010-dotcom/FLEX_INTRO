@@ -1,7 +1,7 @@
 /**
  * TÊN FILE: AimX.js
- * PHIÊN BẢN: VIP SUPREME (Fix SSL Pinning + Magic Bullet)
- * DEV: TLONG (@khongviai)
+ * PHIÊN BẢN: PRO_OVERRIDE_V1 (Real Parameter Modification)
+ * CƠ CHẾ: Tìm kiếm đệ quy và can thiệp trực tiếp vào biến nội bộ của game.
  */
 
 if (typeof $response === "undefined" || !$response.body) {
@@ -11,53 +11,60 @@ if (typeof $response === "undefined" || !$response.body) {
 try {
     let payload = JSON.parse($response.body);
 
-    if (typeof payload !== 'object' || payload === null) {
-        $done({});
+    // 1. [THUẬT TOÁN ĐỆ QUY TÌM VÀ SỬA BIẾN GỐC CỦA GAME]
+    // Hàm này sẽ lục lọi mọi ngóc ngách trong file cấu hình của game tải về
+    function overrideGameParameters(obj) {
+        for (let key in obj) {
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                overrideGameParameters(obj[key]); // Tiếp tục quét sâu vào trong
+            } else if (typeof obj[key] === 'number') {
+                let lowerKey = key.toLowerCase();
+                
+                // --- AIMLOCK & AIM DRAG (Hút tâm & Kéo tâm) ---
+                // Tăng thông số hỗ trợ ngắm và lực hút từ tính
+                if (lowerKey.includes('aim') || lowerKey.includes('assist') || lowerKey.includes('magnet')) {
+                    obj[key] = obj[key] * 2.5; // Tăng 250% độ dính tâm
+                }
+                // Giảm ma sát vuốt trục Y để vuốt kéo đầu mượt hơn
+                if (lowerKey.includes('friction') && lowerKey.includes('y')) {
+                    obj[key] = obj[key] * 0.15; // Giảm 85% lực cản
+                }
+
+                // --- NO RECOIL & STRAIGHT BULLET (Đạn thẳng & Giảm giật) ---
+                if (lowerKey.includes('recoil') || lowerKey.includes('kick')) {
+                    obj[key] = obj[key] * 0.05; // Triệt tiêu 95% độ giật súng
+                }
+                if (lowerKey.includes('spread') || lowerKey.includes('scatter')) {
+                    obj[key] = obj[key] * 0.05; // Đạn không bị tản mát
+                }
+
+                // --- HITBOX EXPANSION (Tăng kích thước đầu) ---
+                if (lowerKey.includes('head') && lowerKey.includes('scale')) {
+                    obj[key] = obj[key] * 1.45; // Tăng kích thước nhận diện đầu lên 45%
+                }
+                if (lowerKey.includes('neck') && lowerKey.includes('multiplier')) {
+                    obj[key] = obj[key] * 2.0; // Hút từ cổ x2
+                }
+            } else if (typeof obj[key] === 'string') {
+                // Đổi ưu tiên bắt tâm từ Ngực (Chest) sang Cổ/Đầu (Neck/Head)
+                if (obj[key] === 'Chest' || obj[key] === 'Spine') {
+                    obj[key] = 'Head';
+                }
+            }
+        }
     }
 
-    // --- HỆ THỐNG AZEXL SUPREME ENGINE ---
-    payload.azexl_supreme_engine = {
-        "engine_state": "ACTIVE_STEALTH_V2",
-        "bypass_signature": "SSL_PINNING_BYPASSED",
+    // Thực thi thuật toán quét và sửa đổi
+    overrideGameParameters(payload);
 
-        // 1. AIM DRAG & HITBOX (Ghim cổ nảy đầu)
-        "hitbox_modifier": {
-            "head_scale_factor": 1.60,         // Mở rộng hitbox đầu lên 60%
-            "neck_magnet_multiplier": 2.5,     // Lực hút từ cổ lên đầu cực mạnh
-            "bone_priority": ["Neck", "Head"],
-            "bullet_magnetism_ratio": 1.25     // Đạn tự động bẻ cong 25% vào hitbox
-        },
-        
-        "drag_overclock": {
-            "y_axis_acceleration": 3.15,       // Gia tốc vuốt trục Y siêu nhạy (Dễ lên đầu)
-            "frictionless_drag": true,
-            "dynamic_braking": { "enabled": true, "brake_force_ratio": 0.90 } // Dừng tâm ngay tại đầu
-        },
+    // 2. [CẮT ĐUÔI BÁO CÁO ANTI-BAN]
+    if (payload.report_url) payload.report_url = "https://127.0.0.1";
+    if (payload.enable_log) payload.enable_log = false;
 
-        // 2. MAGIC BULLET & RECOIL (Đạn ma thuật & Chống giật)
-        "weapon_ballistics": {
-            "magic_bullet_radius": 0.5,        // Bán kính đạn ma thuật ảo (viên đạn to hơn)
-            "recoil_reduction_pct": 95,        // Giảm 95% độ giật lên
-            "spread_reduction_pct": 95,        // Đạn gom thành 1 điểm
-            "fire_rate_delay_ms": -15          // Giảm độ trễ khai hỏa đi 15ms (Bắn nhanh hơn địch)
-        },
-
-        // 3. MAX RANGE AIM ASSIST (Tầm nhìn & Bám mục tiêu)
-        "aim_assist_extension": {
-            "red_dot_max_distance": 300,       // Kéo xa tầm bắt tâm đỏ
-            "auto_track_through_walls": false, // Tắt để an toàn chống ban
-            "target_stickiness": 1.5           // Độ dính của tâm vào mục tiêu x1.5
-        }
-    };
-
-    // XÓA DẤU VẾT THEO DÕI
-    if (payload.telemetry) payload.telemetry = { "enabled": false };
-    if (payload.crash_report) payload.crash_report = { "enabled": false };
-    if (payload.anticheat_log) payload.anticheat_log = { "send_interval": 999999 };
-
+    // 3. ĐÓNG GÓI TRẢ VỀ GAME
     $done({ body: JSON.stringify(payload) });
 
 } catch (error) {
-    // Chống sập mạng tuyệt đối
+    // Bảo vệ không sập mạng nếu gói tin bị mã hóa
     $done({});
 }
