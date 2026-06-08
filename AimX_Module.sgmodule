@@ -1,0 +1,19 @@
+AimX_Module.sgmodule */
+#!name=AimX VIP SOCKS5 Module
+#!desc=Kích hoạt Network Desync (Lệch pha Hitbox) qua UDP. Ép rớt gói tin đồng bộ.
+#!system=ios
+
+[Rule]
+// Ép rớt (Drop) các luồng đồng bộ thời gian và báo cáo, gây lệch pha máy chủ.
+URL-REGEX,^https?:\/\/.*\.garena\.com\/(log|sync|ping|report),REJECT-DROP
+URL-REGEX,^https?:\/\/.*\.freefiremobile\.com\/(log|report),REJECT-DROP
+DOMAIN-KEYWORD,telemetry,REJECT-DROP
+DOMAIN-KEYWORD,crashlytics,REJECT-DROP
+DOMAIN-KEYWORD,appsflyer,REJECT-DROP
+
+// Cưỡng chế định tuyến các luồng game qua Proxy
+DOMAIN-SUFFIX,freefiremobile.com,PROXY
+DOMAIN-SUFFIX,garena.com,PROXY
+
+[MITM]
+hostname = %APPEND% *.garena.com, *.ff.garena.com, *.freefiremobile.com
