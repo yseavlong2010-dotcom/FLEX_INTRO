@@ -1,56 +1,67 @@
 /**
  * TÊN FILE: AimX.js
- * PHIÊN BẢN: AZEXL_MASTER_V2 (Network Recursive Injection)
- * DEV: TLONG
+ * PHIÊN BẢN: PRO_MAX_SAFE (Chống Crash & Bẫy Lỗi Đa Tầng)
+ * CƠ CHẾ: Quét đệ quy an toàn, tự động bỏ qua nếu dữ liệu bị mã hóa.
  */
 
+// 1. Kiểm tra gói tin hợp lệ
 if (typeof $response === "undefined" || !$response.body) {
     $done({});
 }
 
 try {
-    let payload = JSON.parse($response.body);
+    // 2. Bẫy lỗi parse JSON (Nếu Garena mã hóa luồng, chỗ này sẽ báo lỗi nhưng không làm sập mạng)
+    let bodyString = $response.body;
+    let payload = JSON.parse(bodyString);
 
-    // Thuật toán quét sâu vào từng ngóc ngách của dữ liệu game
-    function injectAzexlCore(obj) {
+    // 3. Thuật toán quét và ghi đè an toàn (Chỉ can thiệp số liệu, không phá vỡ cấu trúc)
+    function safeInject(obj) {
+        if (!obj || typeof obj !== 'object') return;
+        
         for (let key in obj) {
-            if (typeof obj[key] === 'object' && obj[key] !== null) {
-                injectAzexlCore(obj[key]);
+            if (typeof obj[key] === 'object') {
+                safeInject(obj[key]); // Quét sâu vào trong
             } else if (typeof obj[key] === 'number') {
-                let lowerKey = key.toLowerCase();
+                let k = key.toLowerCase();
                 
-                // --- AIMLOCK & AIM ASSIST (Tăng độ dính tâm) ---
-                if (lowerKey.includes('aim') || lowerKey.includes('assist') || lowerKey.includes('magnet')) {
-                    obj[key] = obj[key] * 3.5; // Tăng 350% lực hít tâm
+                // [TỐI ƯU HÓA AIM]
+                if (k.includes('aim') || k.includes('assist') || k.includes('magnet')) {
+                    obj[key] = obj[key] * 3.5; 
                 }
-                // --- VUỐT MƯỢT (Giảm ma sát trục Y) ---
-                if (lowerKey.includes('friction') && lowerKey.includes('y')) {
-                    obj[key] = obj[key] * 0.10; // Giảm 90% lực cản khi vuốt lên
+                if (k.includes('friction') && k.includes('y')) {
+                    obj[key] = obj[key] * 0.10; 
                 }
-                // --- ĐẠN THẲNG & NO RECOIL ---
-                if (lowerKey.includes('recoil') || lowerKey.includes('kick')) {
-                    obj[key] = obj[key] * 0.02; // Triệt tiêu 98% độ giật
+                
+                // [TỐI ƯU HÓA ĐẠN & GIẬT]
+                if (k.includes('recoil') || k.includes('kick')) {
+                    obj[key] = obj[key] * 0.01; 
                 }
-                if (lowerKey.includes('spread') || lowerKey.includes('scatter')) {
-                    obj[key] = obj[key] * 0.05; // Gom đạn cực chuẩn
+                if (k.includes('spread') || k.includes('scatter')) {
+                    obj[key] = obj[key] * 0.05; 
                 }
-                // --- MỞ RỘNG HITBOX ĐẦU ---
-                if (lowerKey.includes('head') && lowerKey.includes('scale')) {
-                    obj[key] = obj[key] * 1.65; // Tăng 65% diện tích nhận diện đầu
+                
+                // [MỞ RỘNG HITBOX]
+                if (k.includes('head') && k.includes('scale')) {
+                    obj[key] = obj[key] * 1.50; 
                 }
             }
         }
     }
 
-    injectAzexlCore(payload);
+    // Thực thi
+    safeInject(payload);
 
-    // Chặn báo cáo log (Anti-ban cơ bản)
+    // 4. Cắt đuôi máy chủ Anti-Ban & Telemetry
     if (payload.report_url) payload.report_url = "https://127.0.0.1";
-    if (payload.enable_log) payload.enable_log = false;
+    if (payload.telemetry_url) payload.telemetry_url = "https://127.0.0.1";
+    if (payload.enable_log !== undefined) payload.enable_log = false;
 
+    // 5. Trả dữ liệu về cho game
     $done({ body: JSON.stringify(payload) });
 
 } catch (error) {
-    // Luôn trả về gói tin gốc nếu không thể can thiệp (Bảo vệ mạng)
-    $done({});
+    // [QUAN TRỌNG NHẤT] Nếu có bất kỳ lỗi gì (game update đổi cấu trúc, mã hóa gói tin...), 
+    // lập tức trả về gói tin gốc để game vẫn chơi bình thường, KHÔNG LÀM CRASH SHADOWROCKET.
+    console.log("Azexl Script Bypass: Dữ liệu không phải JSON thuần, đã trả về bản gốc.");
+    $done({ body: $response.body });
 }
