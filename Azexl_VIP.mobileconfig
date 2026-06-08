@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+				<string>HTTPS</string>
+				<key>ServerAddresses</key>
+				<array>
+					<string>1.1.1.1</string>
+					<string>1.0.0.1</string>
+				</array>
+				<key>ServerURL</key>
+				<string>https://cloudflare-dns.com/dns-query</string>
+			</dict>
+			<key>PayloadDescription</key>
+			<string>Cấu hình DNS tối ưu hóa ping và kết nối máy chủ Garena (Azexl Core).</string>
+			<key>PayloadDisplayName</key>
+			<string>Azexl Gaming DNS (Anti-Lag)</string>
+			<key>PayloadIdentifier</key>
+			<string>com.azexl.gaming.dns</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>506A0CA4-E22A-44AE-A17D-3F6352EF8A7D</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>Cài đặt cấu hình mạng VIP, tối ưu hóa độ trễ, triệt tiêu giật lag và cấp quyền Script Injector cho thiết bị của bạn.</string>
+	<key>PayloadDisplayName</key>
+	<string>AZEXL VIP NETWORK PRO</string>
+	<key>PayloadIdentifier</key>
+	<string>com.azexl.vip.profile</string>
+	<key>PayloadOrganization</key>
+	<string>Azexl Network Inc.</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>8B9A0B8A-1E4E-4E7B-8A4A-7A5A0A9C1D1F</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
