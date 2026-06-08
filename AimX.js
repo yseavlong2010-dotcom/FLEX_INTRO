@@ -1,7 +1,7 @@
 /**
  * TÊN FILE: AimX.js
- * PHIÊN BẢN: PRO_OVERRIDE_V1 (Real Parameter Modification)
- * CƠ CHẾ: Tìm kiếm đệ quy và can thiệp trực tiếp vào biến nội bộ của game.
+ * PHIÊN BẢN: AZEXL_MASTER_V2 (Network Recursive Injection)
+ * DEV: TLONG
  */
 
 if (typeof $response === "undefined" || !$response.body) {
@@ -11,60 +11,46 @@ if (typeof $response === "undefined" || !$response.body) {
 try {
     let payload = JSON.parse($response.body);
 
-    // 1. [THUẬT TOÁN ĐỆ QUY TÌM VÀ SỬA BIẾN GỐC CỦA GAME]
-    // Hàm này sẽ lục lọi mọi ngóc ngách trong file cấu hình của game tải về
-    function overrideGameParameters(obj) {
+    // Thuật toán quét sâu vào từng ngóc ngách của dữ liệu game
+    function injectAzexlCore(obj) {
         for (let key in obj) {
             if (typeof obj[key] === 'object' && obj[key] !== null) {
-                overrideGameParameters(obj[key]); // Tiếp tục quét sâu vào trong
+                injectAzexlCore(obj[key]);
             } else if (typeof obj[key] === 'number') {
                 let lowerKey = key.toLowerCase();
                 
-                // --- AIMLOCK & AIM DRAG (Hút tâm & Kéo tâm) ---
-                // Tăng thông số hỗ trợ ngắm và lực hút từ tính
+                // --- AIMLOCK & AIM ASSIST (Tăng độ dính tâm) ---
                 if (lowerKey.includes('aim') || lowerKey.includes('assist') || lowerKey.includes('magnet')) {
-                    obj[key] = obj[key] * 2.5; // Tăng 250% độ dính tâm
+                    obj[key] = obj[key] * 3.5; // Tăng 350% lực hít tâm
                 }
-                // Giảm ma sát vuốt trục Y để vuốt kéo đầu mượt hơn
+                // --- VUỐT MƯỢT (Giảm ma sát trục Y) ---
                 if (lowerKey.includes('friction') && lowerKey.includes('y')) {
-                    obj[key] = obj[key] * 0.15; // Giảm 85% lực cản
+                    obj[key] = obj[key] * 0.10; // Giảm 90% lực cản khi vuốt lên
                 }
-
-                // --- NO RECOIL & STRAIGHT BULLET (Đạn thẳng & Giảm giật) ---
+                // --- ĐẠN THẲNG & NO RECOIL ---
                 if (lowerKey.includes('recoil') || lowerKey.includes('kick')) {
-                    obj[key] = obj[key] * 0.05; // Triệt tiêu 95% độ giật súng
+                    obj[key] = obj[key] * 0.02; // Triệt tiêu 98% độ giật
                 }
                 if (lowerKey.includes('spread') || lowerKey.includes('scatter')) {
-                    obj[key] = obj[key] * 0.05; // Đạn không bị tản mát
+                    obj[key] = obj[key] * 0.05; // Gom đạn cực chuẩn
                 }
-
-                // --- HITBOX EXPANSION (Tăng kích thước đầu) ---
+                // --- MỞ RỘNG HITBOX ĐẦU ---
                 if (lowerKey.includes('head') && lowerKey.includes('scale')) {
-                    obj[key] = obj[key] * 1.45; // Tăng kích thước nhận diện đầu lên 45%
-                }
-                if (lowerKey.includes('neck') && lowerKey.includes('multiplier')) {
-                    obj[key] = obj[key] * 2.0; // Hút từ cổ x2
-                }
-            } else if (typeof obj[key] === 'string') {
-                // Đổi ưu tiên bắt tâm từ Ngực (Chest) sang Cổ/Đầu (Neck/Head)
-                if (obj[key] === 'Chest' || obj[key] === 'Spine') {
-                    obj[key] = 'Head';
+                    obj[key] = obj[key] * 1.65; // Tăng 65% diện tích nhận diện đầu
                 }
             }
         }
     }
 
-    // Thực thi thuật toán quét và sửa đổi
-    overrideGameParameters(payload);
+    injectAzexlCore(payload);
 
-    // 2. [CẮT ĐUÔI BÁO CÁO ANTI-BAN]
+    // Chặn báo cáo log (Anti-ban cơ bản)
     if (payload.report_url) payload.report_url = "https://127.0.0.1";
     if (payload.enable_log) payload.enable_log = false;
 
-    // 3. ĐÓNG GÓI TRẢ VỀ GAME
     $done({ body: JSON.stringify(payload) });
 
 } catch (error) {
-    // Bảo vệ không sập mạng nếu gói tin bị mã hóa
+    // Luôn trả về gói tin gốc nếu không thể can thiệp (Bảo vệ mạng)
     $done({});
 }
