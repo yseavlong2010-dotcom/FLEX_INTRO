@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Responsive cho mobile, tablet, desktop -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Màu thanh trình duyệt trên mobile -->
+  <meta name="theme-color" content="#050816" />
+
+  <title>ChatGPT — Premium Luxury AI Intro</title>
+
+  <meta
+    name="description"
+    content="Premium Luxury AI Intro với hiệu ứng bão dữ liệu hội tụ thành tên ChatGPT, phong cách cinematic neon cao cấp."
+  />
+
+  <!-- Open Graph để khi chia sẻ link nhìn đẹp hơn -->
+  <meta property="og:title" content="ChatGPT — Premium Luxury AI Intro" />
+  <meta
+    property="og:description"
+    content="Cinematic data storm reveal animation for ChatGPT."
+  />
+  <meta property="og:type" content="website" />
+
+  <!-- File CSS chính -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Dùng defer để tránh lỗi JS chạy khi HTML chưa load xong -->
+  <script defer src="script.js"></script>
+</head>
+
+<body
+  data-ai-name="ChatGPT"
+  data-theme="premium-luxury"
+  data-palette="cyan-platinum"
+>
+  <!-- 
+    Canvas chính:
+    JS sẽ vẽ toàn bộ particle chữ, vortex, data storm, glow trail ở đây.
+  -->
+  <canvas
+    id="stormCanvas"
+    class="storm-canvas"
+    aria-hidden="true"
+  ></canvas>
+
+  <!-- 
+    Các layer nền phụ:
+    Chỉ dùng để trang nhìn cinematic/luxury hơn.
+    Không chứa nội dung quan trọng nên aria-hidden.
+  -->
+  <div class="visual-layers" aria-hidden="true">
+    <div class="luxury-gradient luxury-gradient-one"></div>
+    <div class="luxury-gradient luxury-gradient-two"></div>
+    <div class="radial-core"></div>
+    <div class="premium-grid"></div>
+    <div class="scanline-layer"></div>
+    <div class="noise-layer"></div>
+    <div class="vignette-layer"></div>
+  </div>
+
+  <!-- 
+    Giao diện chính ở giữa.
+    Phần này giúp tên AI rõ nét hơn, không phụ thuộc hoàn toàn vào canvas.
+  -->
+  <main class="intro-shell" role="main">
+    <section class="hero-panel" aria-labelledby="aiTitle">
+      <div class="eyebrow-row">
+        <span class="eyebrow-dot"></span>
+        <span class="eyebrow-text">PREMIUM LUXURY AI INTRO</span>
+        <span class="eyebrow-line"></span>
+      </div>
+
+      <h1 id="aiTitle" class="ai-title">
+        ChatGPT
+      </h1>
+
+      <p id="aiSubtitle" class="ai-subtitle">
+        DATA STORM REVEAL SEQUENCE
+      </p>
+
+      <div class="signature-row" aria-label="Intro status">
+        <span>VORTEX ONLINE</span>
+        <span>NEURAL PARTICLES ACTIVE</span>
+        <span>LOOP SYNCHRONIZED</span>
+      </div>
+
+      <div class="energy-frame" aria-hidden="true">
+        <span class="energy-corner energy-corner-top-left"></span>
+        <span class="energy-corner energy-corner-top-right"></span>
+        <span class="energy-corner energy-corner-bottom-left"></span>
+        <span class="energy-corner energy-corner-bottom-right"></span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Thông tin nhỏ góc màn hình, tạo cảm giác giao diện AI cao cấp -->
+  <aside class="system-panel" aria-hidden="true">
+    <div class="system-panel__item">
+      <span class="system-panel__label">MODEL</span>
+      <span class="system-panel__value">ChatGPT</span>
+    </div>
+
+    <div class="system-panel__item">
+      <span class="system-panel__label">THEME</span>
+      <span class="system-panel__value">CYAN PLATINUM</span>
+    </div>
+
+    <div class="system-panel__item">
+      <span class="system-panel__label">MODE</span>
+      <span class="system-panel__value">LUXURY STORM</span>
+    </div>
+  </aside>
+
+  <!-- Loading nhẹ, JS sẽ ẩn sau khi canvas sẵn sàng -->
+  <div id="preloader" class="preloader" role="status" aria-live="polite">
+    <div class="preloader__ring"></div>
+    <p class="preloader__text">Initializing premium data storm...</p>
+  </div>
+
+  <!-- Fallback nếu người dùng tắt JavaScript -->
+  <noscript>
+    <div class="noscript-message">
+      Trình duyệt của bạn cần bật JavaScript để chạy hiệu ứng Premium Luxury AI Intro.
+    </div>
+  </noscript>
+</body>
+</html>
